@@ -1,0 +1,512 @@
+lm.fit_Magazine_Ads_data_sq_pagecost_percmale
+summary(lm.fit_Magazine_Ads_data_sq_pagecost_percmale)
+plot(lm.fit_Magazine_Ads_data_sq_pagecost_percmale)
+lm.fit_Magazine_Ads_data_sq_pagecost_medianincome = lm(formula = sq_page_cost ~ medianincome, data = Magazine_Ads_data_sq_pagecost)
+lm.fit_Magazine_Ads_data_sq_pagecost_medianincome
+summary(lm.fit_Magazine_Ads_data_sq_pagecost_medianincome)
+plot(lm.fit_Magazine_Ads_data_sq_pagecost_medianincome)
+lm.fit_Magazine_Ads_data_sq_pagecost_International = lm(formula = sq_page_cost ~ International, data = Magazine_Ads_data_sq_pagecost)
+lm.fit_Magazine_Ads_data_sq_pagecost_International
+summary(lm.fit_Magazine_Ads_data_sq_pagecost_International)
+plot(lm.fit_Magazine_Ads_data_sq_pagecost_International)
+leaps_fit_Magazine_Ads_data_sq = regsubsets(sq_page_cost ~ circ+percmale+medianincome+International, data = Magazine_Ads_data_sq_pagecost,nbest=2,nvmax=4)
+summary(leaps_fit_Magazine_Ads_data_sq)
+plot(leaps_fit_Magazine_Ads_data_sq)
+library(twitteR)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+library(twitteR)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+xboxtweet = searchTwitter("xbox",1000)
+dftweet = twListToDF(xboxtweet)
+View(dftweet)
+View(dftweet)
+library(twitteR)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+# What are people talking about xbox...
+xboxtweet = searchTwitter("xbox",1000)
+dfxboxtweet = twListToDF(xboxtweet)
+dfxboxtweet_nohandle = str_replace(dfxboxtweet$text,"@\\W+","")
+wordcorpus = Corpus(VectorSource(dfxboxtweet_nohandle)) %>%
+tm_map(removePunctuation) %>%
+tm_map(content_transformer(tolower)) %>%
+tm_map(removeWords,stopwords("english")) %>%
+tm_map(stripWhitespace)
+library(RColorBrewer)
+pal = brewer.pal(7,"YlGnBu")
+pal2 = display.brewer.pal(9,"YlGnBu")
+pal = pal[-c(1:3)]
+set.seed(100)
+wordcloud(words=wordcorpus,random.order = FALSE, colors = pal)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet$text)
+library(twitteR)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet$text)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet$text)
+View(dfxboxtweet)
+View(dfxboxtweet)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle$text)
+dfMarshall$text = clean_tweets(dfMarshall$text)
+install.packages("rtweet")
+library(rtweet)
+dfMarshall$text = clean_tweets(dfMarshall$text)
+dfMarshall$text = cleantweets(dfMarshall$text)
+?tweet
+dfMarshall$text = tolower(dfMarshall$text)
+dfMarshall$text = tolower(dfxboxtweet$text)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_sentimentsTotals = data.frame(colSums(df_xbox_tweet_sentiments[,c(17:26)]))
+colnames(xbox_sentimentsTotals) = "Count"
+xbox_sentimentsTotals = cbind("sentiments" = rownames(xbox_sentimentsTotals),xbox_sentimentsTotals)
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("")
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+# What are people talking about xbox...
+xboxtweet = searchTwitter("xbox",10000)
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+xboxtweet = searchTwitter("YouTube",10000)
+dfxboxtweet = twListToDF(xboxtweet)
+dfxboxtweet_nohandle = str_replace(dfxboxtweet$text,"@\\W+","")
+wordcorpus = Corpus(VectorSource(dfxboxtweet_nohandle)) %>%
+tm_map(removePunctuation) %>%
+tm_map(content_transformer(tolower)) %>%
+tm_map(removeWords,stopwords("english")) %>%
+tm_map(stripWhitespace)
+library(RColorBrewer)
+pal = brewer.pal(7,"YlGnBu")
+pal2 = display.brewer.pal(9,"YlGnBu")
+pal = pal[-c(1:3)]
+set.seed(100)
+wordcloud(words=wordcorpus,random.order = FALSE, colors = pal)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_sentimentsTotals = data.frame(colSums(df_xbox_tweet_sentiments[,c(17:26)]))
+colnames(xbox_sentimentsTotals) = "Count"
+xbox_sentimentsTotals = cbind("sentiments" = rownames(xbox_sentimentsTotals),xbox_sentimentsTotals)
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("")
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+xboxtweet = searchTwitter("NetFlix",10000)
+dfxboxtweet = twListToDF(xboxtweet)
+dfxboxtweet_nohandle = str_replace(dfxboxtweet$text,"@\\W+","")
+wordcorpus = Corpus(VectorSource(dfxboxtweet_nohandle)) %>%
+tm_map(removePunctuation) %>%
+tm_map(content_transformer(tolower)) %>%
+tm_map(removeWords,stopwords("english")) %>%
+tm_map(stripWhitespace)
+library(RColorBrewer)
+pal = brewer.pal(7,"YlGnBu")
+pal2 = display.brewer.pal(9,"YlGnBu")
+set.seed(100)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_sentimentsTotals = data.frame(colSums(df_xbox_tweet_sentiments[,c(17:26)]))
+colnames(xbox_sentimentsTotals) = "Count"
+xbox_sentimentsTotals = cbind("sentiments" = rownames(xbox_sentimentsTotals),xbox_sentimentsTotals)
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("")
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("NetFlix")
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("NetFlix")+
+ylab("# of tweets")
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+# What are people talking about xbox...
+xboxtweet = searchTwitter("YouTube",10000)
+dfxboxtweet = twListToDF(xboxtweet)
+dfxboxtweet_nohandle = str_replace(dfxboxtweet$text,"@\\W+","")
+wordcorpus = Corpus(VectorSource(dfxboxtweet_nohandle)) %>%
+tm_map(removePunctuation) %>%
+tm_map(content_transformer(tolower)) %>%
+tm_map(removeWords,stopwords("english")) %>%
+tm_map(stripWhitespace)
+library(RColorBrewer)
+pal = brewer.pal(7,"YlGnBu")
+pal2 = display.brewer.pal(9,"YlGnBu")
+set.seed(100)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_sentimentsTotals = data.frame(colSums(df_xbox_tweet_sentiments[,c(17:26)]))
+colnames(xbox_sentimentsTotals) = "Count"
+xbox_sentimentsTotals = cbind("sentiments" = rownames(xbox_sentimentsTotals),xbox_sentimentsTotals)
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("YouTube")+
+ylab("# of tweets")
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+# What are people talking about xbox...
+xboxtweet = searchTwitter("Hulu",10000)
+dfxboxtweet = twListToDF(xboxtweet)
+dfxboxtweet_nohandle = str_replace(dfxboxtweet$text,"@\\W+","")
+wordcorpus = Corpus(VectorSource(dfxboxtweet_nohandle)) %>%
+tm_map(removePunctuation) %>%
+tm_map(content_transformer(tolower)) %>%
+tm_map(removeWords,stopwords("english")) %>%
+tm_map(stripWhitespace)
+library(RColorBrewer)
+pal = brewer.pal(7,"YlGnBu")
+pal2 = display.brewer.pal(9,"YlGnBu")
+set.seed(100)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_sentimentsTotals = data.frame(colSums(df_xbox_tweet_sentiments[,c(17:26)]))
+colnames(xbox_sentimentsTotals) = "Count"
+xbox_sentimentsTotals = cbind("sentiments" = rownames(xbox_sentimentsTotals),xbox_sentimentsTotals)
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("Hulu")+
+ylab("# of tweets")
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+# What are people talking about xbox...
+xboxtweet = searchTwitter("amazonprimevideo",10000)
+xboxtweet = searchTwitter("amazonprimevideo",10000)
+xboxtweet = searchTwitter("amazon prime video",10000)
+dfxboxtweet = twListToDF(xboxtweet)
+dfxboxtweet_nohandle = str_replace(dfxboxtweet$text,"@\\W+","")
+wordcorpus = Corpus(VectorSource(dfxboxtweet_nohandle)) %>%
+tm_map(removePunctuation) %>%
+tm_map(content_transformer(tolower)) %>%
+tm_map(removeWords,stopwords("english")) %>%
+tm_map(stripWhitespace)
+library(RColorBrewer)
+pal = brewer.pal(7,"YlGnBu")
+pal2 = display.brewer.pal(9,"YlGnBu")
+set.seed(100)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_sentimentsTotals = data.frame(colSums(df_xbox_tweet_sentiments[,c(17:26)]))
+colnames(xbox_sentimentsTotals) = "Count"
+xbox_sentimentsTotals = cbind("sentiments" = rownames(xbox_sentimentsTotals),xbox_sentimentsTotals)
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("Amazon Prime Video")+
+ylab("# of tweets")
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+# What are people talking about xbox...
+xboxtweet = searchTwitter("YouTube Red",10000)
+dfxboxtweet = twListToDF(xboxtweet)
+dfxboxtweet_nohandle = str_replace(dfxboxtweet$text,"@\\W+","")
+wordcorpus = Corpus(VectorSource(dfxboxtweet_nohandle)) %>%
+tm_map(removePunctuation) %>%
+tm_map(content_transformer(tolower)) %>%
+tm_map(removeWords,stopwords("english")) %>%
+tm_map(stripWhitespace)
+library(RColorBrewer)
+pal = brewer.pal(7,"YlGnBu")
+pal2 = display.brewer.pal(9,"YlGnBu")
+set.seed(100)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_sentimentsTotals = data.frame(colSums(df_xbox_tweet_sentiments[,c(17:26)]))
+colnames(xbox_sentimentsTotals) = "Count"
+xbox_sentimentsTotals = cbind("sentiments" = rownames(xbox_sentimentsTotals),xbox_sentimentsTotals)
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("YouTube Red")+
+ylab("# of tweets")
+View(xbox_Sentiments)
+View(df_xbox_tweet_sentiments)
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+# What are people talking about xbox...
+xboxtweet = searchTwitter("YouTubeRed",10000)
+dfxboxtweet = twListToDF(xboxtweet)
+dfxboxtweet_nohandle = str_replace(dfxboxtweet$text,"@\\W+","")
+wordcorpus = Corpus(VectorSource(dfxboxtweet_nohandle)) %>%
+tm_map(removePunctuation) %>%
+tm_map(content_transformer(tolower)) %>%
+tm_map(removeWords,stopwords("english")) %>%
+tm_map(stripWhitespace)
+library(RColorBrewer)
+pal = brewer.pal(7,"YlGnBu")
+pal2 = display.brewer.pal(9,"YlGnBu")
+set.seed(100)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_sentimentsTotals = data.frame(colSums(df_xbox_tweet_sentiments[,c(17:26)]))
+colnames(xbox_sentimentsTotals) = "Count"
+xbox_sentimentsTotals = cbind("sentiments" = rownames(xbox_sentimentsTotals),xbox_sentimentsTotals)
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("YouTube Red")+
+ylab("# of tweets")
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+# What are people talking about xbox...
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+# Authenticate out acccess to twitter
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+# What are people talking about xbox...
+xboxtweet = searchTwitter("amazonprimevideo",10000)
+dfxboxtweet = twListToDF(xboxtweet)
+dfxboxtweet_nohandle = str_replace(dfxboxtweet$text,"@\\W+","")
+wordcorpus = Corpus(VectorSource(dfxboxtweet_nohandle)) %>%
+tm_map(removePunctuation) %>%
+tm_map(content_transformer(tolower)) %>%
+tm_map(removeWords,stopwords("english")) %>%
+tm_map(stripWhitespace)
+library(RColorBrewer)
+pal = brewer.pal(7,"YlGnBu")
+pal2 = display.brewer.pal(9,"YlGnBu")
+set.seed(100)
+xbox_Sentiments = get_nrc_sentiment(dfxboxtweet_nohandle)
+df_xbox_tweet_sentiments = cbind(dfxboxtweet,xbox_Sentiments)
+xbox_sentimentsTotals = data.frame(colSums(df_xbox_tweet_sentiments[,c(17:26)]))
+colnames(xbox_sentimentsTotals) = "Count"
+xbox_sentimentsTotals = cbind("sentiments" = rownames(xbox_sentimentsTotals),xbox_sentimentsTotals)
+ggplot(xbox_sentimentsTotals,aes(x=reorder(sentiments,Count), Count)) +
+geom_bar(stat = "identity", aes(fill=sentiments)) +
+theme(legend.position="none")+
+xlab("Amazon Prime Video")+
+ylab("# of tweets")
+library(twitteR)
+library(rtweet)
+library(tm)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(lubridate)
+library(syuzhet)
+library(ggplot2)
+api_key = "X7ihNRuWTKXfnFmOlB8O0yswm"
+api_secret = "oSlC4B4V5N3tg4MWeYGKfGaiuqoFvON63Hy4DGSCWGOrHLmGQF"
+access_token = "43590380-GtrtgJWnWxrmSHtBBI8PYt0pae0N49VhcyoMhm0tt"
+access_token_secret = "UdA9hyIZzjvYUP8WqM0jHtCdoLDGmhAzUr58vlC6S9erG"
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
+xboxtweet = searchTwitter("xbox",10000)
+dfxboxtweet = twListToDF(xboxtweet)
+View(df_xbox_tweet_sentiments)
+View(dfxboxtweet)
+View(dfxboxtweet)
+View(xbox_Sentiments)
+View(xbox_Sentiments)
+View(dfxboxtweet)
+View(dfxboxtweet)
+View(xbox_Sentiments)
+View(xbox_Sentiments)
+library(dplyr)
+library(leaps)
+setwd("C:/Users/alok_/Google Drive/Fraud Analytics Projects/Project Three/Subset Selection/")
+Train_CCD_TXN_KS_DF =read.csv("Train_CCD_6.csv")
+leaps_lm.Train_CCD_TXN_frwd = regsubsets(Fraud ~ ., data = Train_CCD_TXN_KS_DF,nbest=1,nvmax=30,really.big=T,method="forward")
+summary(leaps_lm.Train_CCD_TXN_frwd)
+leaps_lm.Train_CCD_TXN_frwd_summary = summary(leaps_lm.Train_CCD_TXN_frwd)
+plot(leaps_lm.Train_CCD_TXN_frwd_summary$adjr2, xlab="Number of Variables", ylab="Adjusted RSq",main="FRWD Subset Selection", type="b")
+plot(leaps_lm.Train_CCD_TXN_frwd_summary,scale="adjr2",main="FRWD Subset Selection")
+leaps_lm.Train_CCD_TXN_bkwd = regsubsets(Fraud ~ ., data = Train_CCD_TXN_KS_DF,nbest=1,nvmax=30,really.big=T,method="backward")
+summary(leaps_lm.Train_CCD_TXN_bkwd)
+leaps_lm.Train_CCD_TXN_bkwd_summary = summary(leaps_lm.Train_CCD_TXN_bkwd)
+plot(leaps_lm.Train_CCD_TXN_bkwd_summary$adjr2, xlab="Number of Variables", ylab="Adjusted RSq",main="BKWRD Subset Selection", type="b")
+plot(leaps_lm.Train_CCD_TXN_bkwd_summary,scale="adjr2",main="BKWRD Subset Selection")
+leaps_lm.Train_CCD_TXN_exhst = regsubsets(Fraud ~ ., data = Train_CCD_TXN_KS_DF,nbest=1,nvmax=30,really.big=T)
+summary(leaps_lm.Train_CCD_TXN_exhst)
+leaps_lm.Train_CCD_TXN_exhst_summary = summary(leaps_lm.Train_CCD_TXN_exhst)
+plot(leaps_lm.Train_CCD_TXN_exhst_summary$adjr2, xlab="Number of Variables", ylab="Adjusted RSq",main="Exhaustv Subset Selection", type="b")
+plot(leaps_lm.Train_CCD_TXN_exhst_summary,scale="adjr2",main="Exhaustv Subset Selection")
+which.max(leaps_lm.Train_CCD_TXN_exhst$adjr2)
+points (21, leaps_lm.Train_CCD_TXN_exhst$adjr2[21], col ="red",cex =2, pch =20)
+plot(leaps_lm.Train_CCD_TXN_exhst$bic, xlab="Number of Variables", ylab="bic",main="Exhaustv Subset Selection", type="b")
+which.min(leaps_lm.Train_CCD_TXN_exhst$bic)
+points (9, leaps_lm.Train_CCD_TXN_exhst$bic[9], col ="red",cex =2, pch =20)

@@ -1,0 +1,82 @@
+---
+title: "Subset Selection"
+author: "William Staudenmeier"
+date: "April 28, 2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(caret)
+library(DMwR)
+library(ROCR)
+require(caTools)
+library(ISLR)
+library(ggplot2)
+library(MASS)
+library(leaps)
+library(bestglm)
+library(glmnet)
+library(Matrix) 
+
+
+train = read.csv("expert variables after ks.csv",stringsAsFactors = F)
+
+
+
+
+best.subset <- regsubsets(Fraud ~ Amount.1 + Amount_week_diff+ Amount_month_diff +                                       same_Cardnum_1 + 
+                            same_Cardnum_diff_Merch_Description_1 +
+                             same_Cardnum_diff_amount_1  +         
+                             same_Cardnum_diff_Merchant_State_1 +  
+                             same_Cardnum_diff_Merchant_Zip_1  +   
+                             same_amount_3 +                       
+                             same_amount_5 +                       
+                             same_amount_7 +                       
+                             same_amount_14 +                      
+                             same_amount_30  +                     
+                             same_amount_diff_Merch_Description_3 +
+                             same_amount_diff_Merch_Description_5 +
+                             same_amount_diff_Merch_Description_7 +
+                             same_amount_diff_Merch_Description_14 +
+                             same_amount_diff_Merch_Description_30 +
+                             same_amount_diff_Cardnum_3 +          
+                             same_amount_diff_Cardnum_5 +          
+                             same_amount_diff_Cardnum_7 +          
+                             same_amount_diff_Cardnum_14 +         
+                             same_amount_diff_Cardnum_30 +         
+                             same_amount_diff_Merchant_State_3 +  
+                             same_amount_diff_Merchant_State_5.y + 
+                             same_amount_diff_Merchant_State_7 +   
+                             same_amount_diff_Merchant_State_14 +  
+                             same_amount_diff_Merchant_State_30 +  
+                             same_amount_diff_Merchant_Zip_3 +     
+                             same_amount_diff_Merchant_Zip_7 +     
+                             same_amount_diff_Merchant_Zip_14 +    
+                             same_amount_diff_Merchant_Zip_30, train, method="exhaustive")
+
+summary(best.subset)
+
+
+best.subset.summary = summary(best.subset)
+
+best.subset.by.adjr2 = which.max(best.subset.summary$adjr2)
+best.subset.by.adjr2
+
+best.subset.by.cp = which.min(best.subset.summary$cp)
+best.subset.by.cp
+
+best.subset.by.bic = which.min(best.subset.summary$bic)
+best.subset.by.bic
+
+
+
+
+```
